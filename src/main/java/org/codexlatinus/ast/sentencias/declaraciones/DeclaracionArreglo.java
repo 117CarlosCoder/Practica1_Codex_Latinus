@@ -69,7 +69,7 @@ public class DeclaracionArreglo extends Sentencia {
     @Override
     public void aPigLatin(StringBuffer sb) {
         sb.append(PigLatinTranslater.traducir("series")).append(" ");
-        sb.append(id);
+        sb.append(PigLatinTranslater.traducir(id));
         if (tamanoExpr != null) {
             sb.append("[");
             tamanoExpr.aPigLatin(sb);

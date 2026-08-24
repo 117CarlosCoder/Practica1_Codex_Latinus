@@ -51,7 +51,7 @@ public class DeclaracionInstanciaEstructura extends Sentencia {
     @Override
     public void aPigLatin(StringBuffer sb) {
         sb.append(PigLatinTranslater.traducir("esto")).append(" ");
-        sb.append(nombre).append(" : ").append(tipoEstructura);
+        sb.append(PigLatinTranslater.traducir(nombre)).append(" : ").append(PigLatinTranslater.traducir(tipoEstructura));
         if (initExpr != null) {
             sb.append(" = ");
             initExpr.aPigLatin(sb);

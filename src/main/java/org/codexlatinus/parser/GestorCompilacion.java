@@ -51,6 +51,7 @@ public class GestorCompilacion {
         erroresTotales.addAll(errorSintacticoListener.getListaErrores());
 
         String astString = tree.toStringTree(parser);
+        String codigoDot = org.codexlatinus.visitor.VisitanteGraphviz.generarDot(tree, parser);
 
         if (!erroresTotales.isEmpty()) {
             return new ResultadoCompilacion(
@@ -58,14 +59,18 @@ public class GestorCompilacion {
                     "== ERROR: No se puede ejecutar el programa debido a errores en la fase de análisis. ==",
                     astString,
                     List.of(),
-                    erroresTotales
+                    erroresTotales,
+                    "",
+                    new org.codexlatinus.model.TablaTipos(),
+                    codigoDot,
+                    null
             );
         }
 
         VisitanteCodexLatinusAst builder = new VisitanteCodexLatinusAst();
         ArbolAst ast = builder.visitProgram(tree);
         try {
-            return ast.ejecutar(lectorConsola, escritorConsola, verificadorCancelacion, astString);
+            return ast.ejecutar(lectorConsola, escritorConsola, verificadorCancelacion, astString, codigoDot, null);
         } catch (Exception e) {
             erroresTotales.add(new ErrorCompilador(ErrorCompilador.TipoError.SEMANTICO, "Excepción en tiempo de ejecución: " + e.getMessage(), 1, 1));
             return new ResultadoCompilacion(
@@ -73,7 +78,11 @@ public class GestorCompilacion {
                     "== ERROR: Excepción durante la ejecución del AST: " + e.getMessage(),
                     astString,
                     List.of(),
-                    erroresTotales
+                    erroresTotales,
+                    "",
+                    new org.codexlatinus.model.TablaTipos(),
+                    codigoDot,
+                    null
             );
         }
     }

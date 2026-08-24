@@ -87,7 +87,7 @@ public class Asignacion extends Sentencia {
         if (lvalue != null) {
             lvalue.aPigLatin(sb);
         } else if (lvalueTexto != null) {
-            sb.append(lvalueTexto);
+            sb.append(org.codexlatinus.utils.PigLatinTranslater.traducir(lvalueTexto));
         }
 
         if (operador != null && (operador.equals("++") || operador.equals("--"))) {

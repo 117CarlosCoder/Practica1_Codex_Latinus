@@ -183,7 +183,7 @@ public class AccesoVariable extends Expresion {
 
     @Override
     public void aPigLatin(StringBuffer sb) {
-        sb.append(identificador);
+        sb.append(org.codexlatinus.utils.PigLatinTranslater.traducir(identificador));
         for (AccesoHijo h : accesosHijos) {
             if (h.esIndice) {
                 sb.append("[");
@@ -192,7 +192,7 @@ public class AccesoVariable extends Expresion {
                 }
                 sb.append("]");
             } else {
-                sb.append(".").append(h.campo);
+                sb.append(".").append(org.codexlatinus.utils.PigLatinTranslater.traducir(h.campo));
             }
         }
     }

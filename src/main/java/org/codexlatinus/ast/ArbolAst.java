@@ -5,6 +5,7 @@ import org.codexlatinus.ast.sentencias.funciones.DeclaracionFuncion;
 import org.codexlatinus.model.ContextoEjecucion;
 import org.codexlatinus.model.Entorno;
 import org.codexlatinus.parser.ResultadoCompilacion;
+import org.codexlatinus.utils.PigLatinTranslater;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,11 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
         return sentenciasPrincipales;
     }
 
-    public ResultadoCompilacion ejecutar(Supplier<String> lector,Consumer<String> escritor,BooleanSupplier cancelChecker,String astString) {
+    public ResultadoCompilacion ejecutar(Supplier<String> lector, Consumer<String> escritor, BooleanSupplier cancelChecker, String astString) {
+        return ejecutar(lector, escritor, cancelChecker, astString, "", null);
+    }
+
+    public ResultadoCompilacion ejecutar(Supplier<String> lector, Consumer<String> escritor, BooleanSupplier cancelChecker, String astString, String codigoDot, java.awt.image.BufferedImage imagenGraphviz) {
         ContextoEjecucion ctx = new ContextoEjecucion(lector, escritor, cancelChecker);
         Entorno entornoGlobal = new Entorno(null, "Global");
 
@@ -85,14 +90,16 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
                 ctx.getTablaSimbolosCompleta(),
                 ctx.getErroresSemanticos(),
                 sbPigLatin.toString(),
-                ctx.getTablaTipos()
+                ctx.getTablaTipos(),
+                codigoDot,
+                imagenGraphviz
         );
     }
 
     @Override
     public void aPigLatin(StringBuffer sb) {
         if (!declaracionesGlobales.isEmpty()) {
-            sb.append("VARIABILES>\n");
+            sb.append(PigLatinTranslater.traducir("VARIABILES>")).append("\n");
             for (Sentencia s : declaracionesGlobales) {
                 s.aPigLatin(sb);
                 sb.append("\n");
@@ -100,7 +107,7 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
         }
 
         if (!funciones.isEmpty()) {
-            sb.append("MUNERA>\n");
+            sb.append(PigLatinTranslater.traducir("MUNERA>")).append("\n");
             for (DeclaracionFuncion f : funciones) {
                 f.aPigLatin(sb);
                 sb.append("\n");
@@ -108,12 +115,12 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
         }
 
         if (!sentenciasPrincipales.isEmpty()) {
-            sb.append("MAIOR>\n");
+            sb.append(PigLatinTranslater.traducir("MAIOR>")).append("\n");
             for (Sentencia s : sentenciasPrincipales) {
                 s.aPigLatin(sb);
                 sb.append("\n");
             }
-            sb.append("FINIS;\n");
+            sb.append(PigLatinTranslater.traducir("FINIS")).append(";\n");
         }
     }
 }

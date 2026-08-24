@@ -64,7 +64,7 @@ public class Declaracion extends Sentencia {
     @Override
     public void aPigLatin(StringBuffer sb) {
         sb.append(PigLatinTranslater.traducir("esto")).append(" ");
-        sb.append(id).append(" : ");
+        sb.append(PigLatinTranslater.traducir(id)).append(" : ");
         if (tipo != null) {
             tipo.aPigLatin(sb);
         }

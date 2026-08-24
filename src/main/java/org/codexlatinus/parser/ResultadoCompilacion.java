@@ -4,6 +4,8 @@ import org.codexlatinus.model.ErrorCompilador;
 import org.codexlatinus.model.Simbolo;
 import org.codexlatinus.model.TablaTipos;
 
+import javax.swing.ImageIcon;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class ResultadoCompilacion {
@@ -14,13 +16,15 @@ public class ResultadoCompilacion {
     private final List<ErrorCompilador> listaErrores;
     private final String codigoPigLatin;
     private final TablaTipos tablaTipos;
+    private final String codigoDot;
+    private BufferedImage imagenGraphviz;
 
     public ResultadoCompilacion(boolean exitoso,
                                 String salidaConsola,
                                 String representacionAst,
                                 List<Simbolo> listaSimbolos,
                                 List<ErrorCompilador> listaErrores) {
-        this(exitoso, salidaConsola, representacionAst, listaSimbolos, listaErrores, "", new TablaTipos());
+        this(exitoso, salidaConsola, representacionAst, listaSimbolos, listaErrores, "", new TablaTipos(), "", null);
     }
 
     public ResultadoCompilacion(boolean exitoso,
@@ -29,7 +33,7 @@ public class ResultadoCompilacion {
                                 List<Simbolo> listaSimbolos,
                                 List<ErrorCompilador> listaErrores,
                                 String codigoPigLatin) {
-        this(exitoso, salidaConsola, representacionAst, listaSimbolos, listaErrores, codigoPigLatin, new TablaTipos());
+        this(exitoso, salidaConsola, representacionAst, listaSimbolos, listaErrores, codigoPigLatin, new TablaTipos(), "", null);
     }
 
     public ResultadoCompilacion(boolean exitoso,
@@ -39,6 +43,18 @@ public class ResultadoCompilacion {
                                 List<ErrorCompilador> listaErrores,
                                 String codigoPigLatin,
                                 TablaTipos tablaTipos) {
+        this(exitoso, salidaConsola, representacionAst, listaSimbolos, listaErrores, codigoPigLatin, tablaTipos, "", null);
+    }
+
+    public ResultadoCompilacion(boolean exitoso,
+                                String salidaConsola,
+                                String representacionAst,
+                                List<Simbolo> listaSimbolos,
+                                List<ErrorCompilador> listaErrores,
+                                String codigoPigLatin,
+                                TablaTipos tablaTipos,
+                                String codigoDot,
+                                BufferedImage imagenGraphviz) {
         this.exitoso = exitoso;
         this.salidaConsola = salidaConsola;
         this.representacionAst = representacionAst;
@@ -46,6 +62,8 @@ public class ResultadoCompilacion {
         this.listaErrores = listaErrores;
         this.codigoPigLatin = codigoPigLatin != null ? codigoPigLatin : "";
         this.tablaTipos = tablaTipos != null ? tablaTipos : new TablaTipos();
+        this.codigoDot = codigoDot != null ? codigoDot : "";
+        this.imagenGraphviz = imagenGraphviz;
     }
 
     public boolean esExitoso() {
@@ -74,6 +92,22 @@ public class ResultadoCompilacion {
 
     public TablaTipos getTablaTipos() {
         return tablaTipos;
+    }
+
+    public String getCodigoDot() {
+        return codigoDot;
+    }
+
+    public synchronized BufferedImage getImagenGraphviz() {
+        if (imagenGraphviz == null && codigoDot != null && !codigoDot.isBlank()) {
+            imagenGraphviz = org.codexlatinus.visitor.RenderizadorGraphviz.renderizarDotAImagen(codigoDot);
+        }
+        return imagenGraphviz;
+    }
+
+    public ImageIcon getIconoGraphviz() {
+        BufferedImage img = getImagenGraphviz();
+        return img != null ? new ImageIcon(img) : null;
     }
 
     public String getErroresFormateados() {

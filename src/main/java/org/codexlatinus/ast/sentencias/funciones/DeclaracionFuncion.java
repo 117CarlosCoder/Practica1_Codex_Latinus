@@ -129,12 +129,12 @@ public class DeclaracionFuncion extends Sentencia implements ContenedorSentencia
             tipo.aPigLatin(sb);
             sb.append(" ");
         }
-        sb.append(nombre).append("(");
+        sb.append(PigLatinTranslater.traducir(nombre)).append("(");
         for (int i = 0; i < parametros.size(); i++) {
             if (i > 0) sb.append(", ");
             Parametro p = parametros.get(i);
             sb.append(PigLatinTranslater.traducir("esto")).append(" ");
-            sb.append(p.nombre).append(" : ");
+            sb.append(PigLatinTranslater.traducir(p.nombre)).append(" : ");
             if (p.tipo != null) {
                 p.tipo.aPigLatin(sb);
             }
@@ -142,7 +142,7 @@ public class DeclaracionFuncion extends Sentencia implements ContenedorSentencia
         sb.append(") {\n");
 
         if (!variablesLocales.isEmpty()) {
-            sb.append("    VARIABILES[\n");
+            sb.append("    ").append(PigLatinTranslater.traducir("VARIABILES[")).append("\n");
             for (Sentencia v : variablesLocales) {
                 sb.append("        ");
                 v.aPigLatin(sb);

@@ -105,7 +105,7 @@ public class LlamadaFuncion extends Expresion {
 
     @Override
     public void aPigLatin(StringBuffer sb) {
-        sb.append(nombre).append("(");
+        sb.append(org.codexlatinus.utils.PigLatinTranslater.traducir(nombre)).append("(");
         for (int i = 0; i < argumentos.size(); i++) {
             if (i > 0) sb.append(", ");
             argumentos.get(i).aPigLatin(sb);

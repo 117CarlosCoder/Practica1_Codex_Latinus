@@ -36,7 +36,7 @@ public class DeclaracionEstructura extends Sentencia {
 
     @Override
     public void aPigLatin(StringBuffer sb) {
-        sb.append(PigLatinTranslater.traducir("structura")).append(" ").append(nombre).append(" {\n");
+        sb.append(PigLatinTranslater.traducir("structura")).append(" ").append(PigLatinTranslater.traducir(nombre)).append(" {\n");
         for (Map.Entry<String, String> entry : miembros.entrySet()) {
             sb.append("    ").append(PigLatinTranslater.traducir("esto")).append(" ");
             sb.append(PigLatinTranslater.traducir(entry.getKey())).append(" : ");

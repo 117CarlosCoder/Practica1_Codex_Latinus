@@ -69,7 +69,7 @@ public class SentenciaLectura extends Sentencia {
             target.aPigLatin(sb);
             sb.append(" ");
         } else if (identificador != null) {
-            sb.append(identificador).append(" ");
+            sb.append(PigLatinTranslater.traducir(identificador)).append(" ");
         }
         sb.append(PigLatinTranslater.traducir("<<")).append(";");
     }
