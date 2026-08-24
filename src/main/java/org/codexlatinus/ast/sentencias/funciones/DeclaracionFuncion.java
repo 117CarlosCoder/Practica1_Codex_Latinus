@@ -105,7 +105,18 @@ public class DeclaracionFuncion extends Sentencia implements ContenedorSentencia
     public void ejecutar(Entorno entorno, ContextoEjecucion ctx) {
         ctx.registrarFuncion(nombre, this);
         String tipoRet = tipo != null ? tipo.getType() : "void";
-        Simbolo sim = new Simbolo(nombre, tipoRet, "Función", "Global", "[Función]", getLinea(), getColumna());
+        Simbolo sim = new Simbolo(nombre, tipoRet, "func", "Global", "[Función]", getLinea(), getColumna());
+        sim.setNumParam(parametros.size());
+        if (!parametros.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < parametros.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(parametros.get(i).getTipo() != null ? parametros.get(i).getTipo().getType() : "void");
+            }
+            sim.setListParam(sb.toString());
+        } else {
+            sim.setListParam("-");
+        }
         ctx.registrarSimbolo(entorno, sim);
     }
 

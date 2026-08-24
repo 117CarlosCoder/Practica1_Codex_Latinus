@@ -173,6 +173,11 @@ public class VentanaPrincipal extends JFrame {
         btnSimbolos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnSimbolos.addActionListener(e -> verTablaSimbolos());
 
+        JButton btnTipos = new JButton("Tipos");
+        btnTipos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        btnTipos.setToolTipText("Ver la Tabla de Tipos del compilador");
+        btnTipos.addActionListener(e -> verTablaTipos());
+
         JButton btnErrores = new JButton("Errores");
         btnErrores.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         btnErrores.addActionListener(e -> verTablaErrores());
@@ -194,6 +199,7 @@ public class VentanaPrincipal extends JFrame {
         toolBar.add(btnAbrirCarpeta);
         toolBar.add(Box.createHorizontalGlue());
         toolBar.add(btnSimbolos);
+        toolBar.add(btnTipos);
         toolBar.add(btnErrores);
 
         return toolBar;
@@ -444,10 +450,17 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void verTablaSimbolos() {
+        if (ultimoResultado == null) {
+            String codigo = areaEditor.getText();
+            if (codigo != null && !codigo.trim().isEmpty()) {
+                ultimoResultado = GestorCompilacion.ejecutar(codigo);
+            }
+        }
+
         if (ultimoResultado != null) {
             DialogoTabla.mostrarTablaSimbolos(this, ultimoResultado.getListaSimbolos());
         } else {
-            JOptionPane.showMessageDialog(this, "Primero ejecuta el código para generar la tabla de símbolos.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Primero ingresa o ejecuta el código para generar la tabla de símbolos.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -456,6 +469,21 @@ public class VentanaPrincipal extends JFrame {
             DialogoTabla.mostrarTablaErrores(this, ultimoResultado.getListaErrores());
         } else {
             JOptionPane.showMessageDialog(this, "Primero ejecuta el código para analizar posibles errores.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
+    private void verTablaTipos() {
+        if (ultimoResultado == null) {
+            String codigo = areaEditor.getText();
+            if (codigo != null && !codigo.trim().isEmpty()) {
+                ultimoResultado = GestorCompilacion.ejecutar(codigo);
+            }
+        }
+
+        if (ultimoResultado != null && ultimoResultado.getTablaTipos() != null) {
+            DialogoTabla.mostrarTablaTipos(this, ultimoResultado.getTablaTipos());
+        } else {
+            DialogoTabla.mostrarTablaTipos(this, new org.codexlatinus.model.TablaTipos());
         }
     }
 

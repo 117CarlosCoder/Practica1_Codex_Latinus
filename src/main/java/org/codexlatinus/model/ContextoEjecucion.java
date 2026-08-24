@@ -12,6 +12,7 @@ public class ContextoEjecucion {
     private final StringBuilder salidaConsola = new StringBuilder();
     private final List<ErrorCompilador> erroresSemanticos = new ArrayList<>();
     private final List<Simbolo> tablaSimbolosCompleta = new ArrayList<>();
+    private final TablaTipos tablaTipos = new TablaTipos();
 
     private final Map<String, DeclaracionFuncion> funciones = new HashMap<>();
     private final Map<String, Map<String, String>> estructuras = new HashMap<>();
@@ -66,11 +67,22 @@ public class ContextoEjecucion {
         return "";
     }
 
+    private int contadorIdSimbolo = 1;
+    private int direccionMemoria = 0;
+
     public void agregarError(String descripcion, int linea, int columna) {
         erroresSemanticos.add(new ErrorCompilador(ErrorCompilador.TipoError.SEMANTICO, descripcion, linea, columna));
     }
 
     public void registrarSimbolo(Entorno entorno, Simbolo sim) {
+        if (sim.getId() <= 0) {
+            sim.setId(contadorIdSimbolo++);
+        }
+        if (sim.getDir() == 0 && direccionMemoria > 0) {
+            sim.setDir(direccionMemoria++);
+        } else if (sim.getDir() == 0) {
+            sim.setDir(direccionMemoria++);
+        }
         entorno.definir(sim);
         tablaSimbolosCompleta.add(sim);
     }
@@ -130,5 +142,10 @@ public class ContextoEjecucion {
 
     public List<Simbolo> getTablaSimbolosCompleta() {
         return tablaSimbolosCompleta;
+    }
+
+    public TablaTipos getTablaTipos() {
+        tablaTipos.poblarDesdeSimbolos(tablaSimbolosCompleta, estructuras);
+        return tablaTipos;
     }
 }

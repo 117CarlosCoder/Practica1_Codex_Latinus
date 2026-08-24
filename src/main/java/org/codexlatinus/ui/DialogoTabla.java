@@ -57,21 +57,30 @@ public class DialogoTabla extends JDialog {
     }
 
     public static void mostrarTablaSimbolos(Frame propietario, List<Simbolo> simbolos) {
-        String[] columnas = {"Nombre", "Tipo", "Categoría", "Ámbito / Entorno", "Valor Actual", "Línea", "Columna"};
-        Object[][] datos = new Object[simbolos.size()][7];
+        String[] columnas = {
+                "ID", "Nombre", "Categoría", "Tipo", "Valor Actual",
+                "NumParam", "ListParam", "Dir", "Ámbito", "Línea", "Columna"
+        };
+        Object[][] datos = new Object[simbolos.size()][columnas.length];
 
         for (int i = 0; i < simbolos.size(); i++) {
             Simbolo s = simbolos.get(i);
-            datos[i][0] = s.getNombre();
-            datos[i][1] = s.getTipo();
+            datos[i][0] = s.getId();
+            datos[i][1] = s.getNombre();
             datos[i][2] = s.getCategoria();
-            datos[i][3] = s.getEntorno();
+            datos[i][3] = s.getTipo();
             datos[i][4] = s.getValorComoTexto();
-            datos[i][5] = s.getLinea();
-            datos[i][6] = s.getColumna();
+            datos[i][5] = (s.getCategoria().equalsIgnoreCase("func") || s.getCategoria().equalsIgnoreCase("Función")) ? s.getNumParam() : "-";
+            datos[i][6] = s.getListParam();
+            datos[i][7] = s.getDir();
+            datos[i][8] = s.getEntorno();
+            datos[i][9] = s.getLinea();
+            datos[i][10] = s.getColumna();
         }
 
         DialogoTabla dialogo = new DialogoTabla(propietario, "Tabla de Símbolos - Codex Latinus", columnas, datos);
+        dialogo.setSize(920, 500);
+        dialogo.setLocationRelativeTo(propietario);
         dialogo.setVisible(true);
     }
 
@@ -88,6 +97,17 @@ public class DialogoTabla extends JDialog {
         }
 
         DialogoTabla dialogo = new DialogoTabla(propietario, "Reporte de Errores - Codex Latinus", columnas, datos);
+        dialogo.setVisible(true);
+    }
+
+    public static void mostrarTablaTipos(Frame propietario, org.codexlatinus.model.TablaTipos tablaTipos) {
+        if (tablaTipos == null) {
+            tablaTipos = new org.codexlatinus.model.TablaTipos();
+        }
+        String[] columnas = org.codexlatinus.model.TablaTipos.getColumnas();
+        Object[][] datos = tablaTipos.aMatrizDatos();
+
+        DialogoTabla dialogo = new DialogoTabla(propietario, "Tabla de Tipos - Codex Latinus", columnas, datos);
         dialogo.setVisible(true);
     }
 }
