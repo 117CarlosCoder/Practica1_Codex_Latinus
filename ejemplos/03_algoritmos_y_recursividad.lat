@@ -1,0 +1,234 @@
+##
+====================================================================
+  CODEX LATINUS - PRUEBA ULTRA COMPLEJA 01
+  Recursividad, Algoritmos, Ordenamiento Burbuja, Dibujo ASCII y Structs
+====================================================================
+##
+
+VARIABILES>
+esto titulo : textum = "=== SUITE DE ALGORITMOS Y RECURSIVIDAD ===";
+series arreglo_numeros[10] : {64, 34, 25, 12, 22, 11, 90, 88, 45, 5};
+series arreglo_desordenado[8] : {9, 2, 7, 1, 8, 3, 6, 4};
+
+structura ObjetoInventario {
+    esto nombre : textum,
+    esto poder : numerus,
+    esto activo : bool
+} finis;
+
+structura Heroe {
+    esto nombre : textum,
+    esto nivel : numerus,
+    esto vida : decimalis,
+    series mochila : ObjetoInventario
+} finis;
+
+esto paladin : Heroe {
+    nombre: "Rolando",
+    nivel: 20,
+    vida: 950.50,
+    mochila: ObjetoInventario[3]
+};
+
+MUNERA>
+
+## 1. Recursividad Simple: Factorial ##
+ratio numerus factorial(esto n : numerus) {
+    si (n <= 1) {
+        reddere 1;
+    } aliter {
+        reddere n * factorial(n - 1);
+    } finis;
+} finis;
+
+## 2. Recursividad Doble: Fibonacci ##
+ratio numerus fibonacci(esto n : numerus) {
+    si (n <= 0) {
+        reddere 0;
+    } aliter si (n == 1) {
+        reddere 1;
+    } aliter {
+        reddere fibonacci(n - 1) + fibonacci(n - 2);
+    } finis;
+} finis;
+
+## 3. Recursividad: Máximo Común Divisor (Euclides) ##
+ratio numerus mcd(esto a : numerus, esto b : numerus) {
+    si (b == 0) {
+        reddere a;
+    } aliter {
+        reddere mcd(b, a % b);
+    } finis;
+} finis;
+
+## 4. Recursividad de Ramificación: Torres de Hanoi ##
+actio hanoi(esto discos : numerus, esto origen : textum, esto destino : textum, esto auxiliar : textum) {
+    si (discos == 1) {
+        >> "  Mover disco 1 de " >> origen >> " hacia " >> destino;
+    } aliter {
+        hanoi(discos - 1, origen, auxiliar, destino);
+        >> "  Mover disco " >> discos >> " de " >> origen >> " hacia " >> destino;
+        hanoi(discos - 1, auxiliar, destino, origen);
+    } finis;
+} finis;
+
+## 5. Función de Ackerman (Recursividad Profunda) ##
+ratio numerus ackermann(esto m : numerus, esto n : numerus) {
+    si (m == 0) {
+        reddere n + 1;
+    } aliter si (m > 0 && n == 0) {
+        reddere ackermann(m - 1, 1);
+    } aliter {
+        reddere ackermann(m - 1, ackermann(m, n - 1));
+    } finis;
+} finis;
+
+## 6. Ordenamiento Tipo Burbuja (Bubble Sort) ##
+actio ordenarBurbuja() {
+    VARIABILES[
+        esto n : numerus = 10;
+        esto temp : numerus = 0;
+    ]
+    per (esto i : numerus = 0; i < n - 1; i++) {
+        per (esto j : numerus = 0; j < n - i - 1; j++) {
+            si (arreglo_numeros[j] > arreglo_numeros[j + 1]) {
+                temp = arreglo_numeros[j];
+                arreglo_numeros[j] = arreglo_numeros[j + 1];
+                arreglo_numeros[j + 1] = temp;
+            } finis;
+        } finis;
+    } finis;
+} finis;
+
+## 7. Búsqueda Binaria Recursiva ##
+ratio numerus busquedaBinaria(esto clave : numerus, esto bajo : numerus, esto alto : numerus) {
+    VARIABILES[
+        esto medio : numerus = 0;
+    ]
+    si (bajo > alto) {
+        reddere -1;
+    } finis;
+
+    medio = (bajo + alto) / 2;
+
+    si (arreglo_numeros[medio] == clave) {
+        reddere medio;
+    } aliter si (arreglo_numeros[medio] > clave) {
+        reddere busquedaBinaria(clave, bajo, medio - 1);
+    } aliter {
+        reddere busquedaBinaria(clave, medio + 1, alto);
+    } finis;
+} finis;
+
+## 8. Dibujo en Consola: Pirámide de Caracteres ##
+actio dibujarPiramide(esto altura : numerus) {
+    per (esto i : numerus = 1; i <= altura; i++) {
+        esto linea : textum = "";
+        per (esto esp : numerus = 1; esp <= altura - i; esp++) {
+            linea = linea + " ";
+        } finis;
+        per (esto ast : numerus = 1; ast <= (2 * i - 1); ast++) {
+            linea = linea + "*";
+        } finis;
+        >> linea;
+    } finis;
+} finis;
+
+## 9. Dibujo en Consola: Tablero de Ajedrez ##
+actio dibujarTableroAjedrez(esto tamano : numerus) {
+    per (esto fila : numerus = 0; fila < tamano; fila++) {
+        esto filaStr : textum = "";
+        per (esto col : numerus = 0; col < tamano; col++) {
+            si ((fila + col) % 2 == 0) {
+                filaStr = filaStr + "[#]";
+            } aliter {
+                filaStr = filaStr + "[ ]";
+            } finis;
+        } finis;
+        >> filaStr;
+    } finis;
+} finis;
+
+MAIOR>
+>> titulo;
+>> "--------------------------------------------------------";
+
+## Prueba 1: Factorial y Fibonacci ##
+>> ">>> PRUEBA 1: RECURSIVIDAD MATEMATICA";
+>> "Factorial de 6 (esperado 720): " >> factorial(6);
+>> "Factorial de 8 (esperado 40320): " >> factorial(8);
+>> "Fibonacci de 0..10: ";
+per (esto f : numerus = 0; f <= 10; f++) {
+    >> "Fib(" >> f >> ") = " >> fibonacci(f);
+} finis;
+
+>> "MCD de 48 y 18 (esperado 6): " >> mcd(48, 18);
+>> "MCD de 1071 y 462 (esperado 21): " >> mcd(1071, 462);
+
+>> "Ackermann(2, 3) (esperado 9): " >> ackermann(2, 3);
+>> "Ackermann(3, 2) (esperado 29): " >> ackermann(3, 2);
+
+## Prueba 2: Torres de Hanoi ##
+>> "";
+>> ">>> PRUEBA 2: TORRES DE HANOI (3 Discos)";
+hanoi(3, "Torre A", "Torre C", "Torre B");
+
+## Prueba 3: Ordenamiento Burbuja y Búsqueda Binaria ##
+>> "";
+>> ">>> PRUEBA 3: ORDENAMIENTO BURBUJA";
+>> "Arreglo ANTES de ordenar:";
+per (esto k : numerus = 0; k < 10; k++) {
+    >> "  Elemento [" >> k >> "] = " >> arreglo_numeros[k];
+} finis;
+
+ordenarBurbuja();
+
+>> "Arreglo DESPUES de ordenar:";
+per (esto k : numerus = 0; k < 10; k++) {
+    >> "  Elemento [" >> k >> "] = " >> arreglo_numeros[k];
+} finis;
+
+>> "Busqueda binaria del valor 22: Indice = " >> busquedaBinaria(22, 0, 9);
+>> "Busqueda binaria del valor 90: Indice = " >> busquedaBinaria(90, 0, 9);
+>> "Busqueda binaria del valor 999 (inexistente): Indice = " >> busquedaBinaria(999, 0, 9);
+
+## Prueba 4: Estructuras y Objetos Anidados ##
+>> "";
+>> ">>> PRUEBA 4: GESTION DE STRUCTS ANIDADOS Y ARREGLOS";
+paladin.mochila[0] = {
+    nombre: "Espada Sagrada",
+    poder: 150,
+    activo: verum
+};
+
+paladin.mochila[1] = {
+    nombre: "Escudo Legendario",
+    poder: 90,
+    activo: verum
+};
+
+paladin.mochila[2] = {
+    nombre: "Pocion de Vida",
+    poder: 50,
+    activo: falsus
+};
+
+>> "Heroe: " >> paladin.nombre >> " | Nivel: " >> paladin.nivel >> " | Vida: " >> paladin.vida;
+per (esto it : numerus = 0; it < 3; it++) {
+    >> "  Item [" >> it >> "]: " >> paladin.mochila[it].nombre >> " | Poder: " >> paladin.mochila[it].poder >> " | Activo: " >> paladin.mochila[it].activo;
+} finis;
+
+## Prueba 5: Dibujo de Figuras en Consola ##
+>> "";
+>> ">>> PRUEBA 5: DIBUJO EN CONSOLA (PIRAMIDE Y AJEDREZ)";
+>> "Piramide de 6 niveles:";
+dibujarPiramide(6);
+
+>> "";
+>> "Tablero de Ajedrez (6x6):";
+dibujarTableroAjedrez(6);
+
+>> "";
+>> "=== FIN DE SUITE DE ALGORITMOS Y RECURSIVIDAD ===";
+
+FINIS;

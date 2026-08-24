@@ -1,0 +1,58 @@
+##
+=====================================================
+Codex Latinus - Ejemplo Completo con Estructuras y Bucles
+=====================================================
+##
+
+VARIABILES>
+series numeros[5] : numerus = {10, 20, 30, 40, 50};
+
+structura Soldado {
+    esto nombre : textum;
+    esto rango : numerus;
+} finis;
+
+esto capitan : Soldado = {
+    nombre: "Maximus",
+    rango: 5
+};
+
+MUNERA>
+actio mostrarEncabezado(esto titulo : textum) {
+    >> "========================================";
+    >> ">>> " >> titulo;
+    >> "========================================";
+} finis;
+
+ratio decimalis promedio(esto a : decimalis, esto b : decimalis) {
+    reddere (a + b) / 2.0;
+} finis;
+
+MAIOR>
+mostrarEncabezado("INFORME DE LA RESISTENCIA");
+
+>> "Capitán al mando: " >> capitan.nombre;
+>> "Nivel de rango: " >> capitan.rango;
+
+>> "\n--- Iteración con bucle FOR (per) ---";
+esto sumaTotal : numerus = 0;
+per (esto k : numerus = 0; k < 5; k++) {
+    >> "Elemento en pos " >> k >> ": " >> numeros[k];
+    sumaTotal = sumaTotal + numeros[k];
+}
+
+>> "Suma total del arreglo: " >> sumaTotal;
+
+>> "\n--- Iteración con bucle WHILE (dum) ---";
+esto cuentaAtras : numerus = 3;
+dum (cuentaAtras > 0) {
+    >> "Despegue en: " >> cuentaAtras;
+    cuentaAtras--;
+} finis;
+
+>> "\n--- Promedio con DECIMALIS ---";
+esto prom : decimalis = promedio(18.5, 14.5);
+>> "El promedio calculado es: " >> prom;
+
+>> "\n¡Misión completada con éxito!";
+FINIS;

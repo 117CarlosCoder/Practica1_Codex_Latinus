@@ -1,0 +1,198 @@
+##
+=============================================================================
+  CODEX LATINUS - EJEMPLO 08: GENERADOR DE ARTE ASCII Y FIGURAS GEOMÉTRICAS
+  Dibujo procedimental en consola: Pirámides, Diamantes, Corazón,
+  Reloj de Arena, Árbol de Navidad y Tablero de Ajedrez.
+=============================================================================
+##
+
+# =========================================================================
+# 1. SECCIÓN DE VARIABLES GLOBALES (VARIABILES>)
+# =========================================================================
+VARIABILES>
+esto autor : textum = "Arquitecto Latinus";
+esto version : decimalis = 2.0;
+
+
+# =========================================================================
+# 2. SECCIÓN DE FUNCIONES Y PROCEDIMIENTOS DE DIBUJO (MUNERA>)
+# =========================================================================
+MUNERA>
+
+# 2.1. Acción: Imprimir Encabezado de Sección
+actio imprimirTituloFigura(esto nombreFigura : textum) {
+    VARIABILES[
+        esto lineaBorde : textum = "==================================================";
+    ]
+    >> "";
+    >> lineaBorde;
+    >> ">>> FIGURA: " >> nombreFigura;
+    >> lineaBorde;
+} finis;
+
+# 2.2. Acción: Dibujar Pirámide Simétrica
+actio dibujarPiramide(esto altura : numerus) {
+    per (esto i : numerus = 1; i <= altura; i++) {
+        esto espacios : numerus = altura - i;
+        esto asteriscos : numerus = (2 * i) - 1;
+        esto fila : textum = "";
+        
+        per (esto e : numerus = 0; e < espacios; e++) {
+            fila = fila + " ";
+        } finis;
+        
+        per (esto a : numerus = 0; a < asteriscos; a++) {
+            fila = fila + "*";
+        } finis;
+        
+        >> fila;
+    } finis;
+} finis;
+
+# 2.3. Acción: Dibujar Diamante / Rombo
+actio dibujarDiamante(esto radio : numerus) {
+    # Parte Superior del Diamante
+    per (esto i : numerus = 1; i <= radio; i++) {
+        esto espacios : numerus = radio - i;
+        esto estrellas : numerus = (2 * i) - 1;
+        esto fila : textum = "";
+        per (esto e : numerus = 0; e < espacios; e++) {
+            fila = fila + " ";
+        } finis;
+        per (esto a : numerus = 0; a < estrellas; a++) {
+            fila = fila + "♦";
+        } finis;
+        >> fila;
+    } finis;
+
+    # Parte Inferior del Diamante
+    per (esto j : numerus = radio - 1; j >= 1; j--) {
+        esto espacios : numerus = radio - j;
+        esto estrellas : numerus = (2 * j) - 1;
+        esto fila : textum = "";
+        per (esto e : numerus = 0; e < espacios; e++) {
+            fila = fila + " ";
+        } finis;
+        per (esto a : numerus = 0; a < estrellas; a++) {
+            fila = fila + "♦";
+        } finis;
+        >> fila;
+    } finis;
+} finis;
+
+# 2.4. Acción: Dibujar Corazón con ASCII
+actio dibujarCorazon() {
+    >> "     ♥♥♥♥       ♥♥♥♥     ";
+    >> "   ♥♥♥♥♥♥♥♥   ♥♥♥♥♥♥♥♥   ";
+    >> "  ♥♥♥♥♥♥♥♥♥♥ ♥♥♥♥♥♥♥♥♥♥  ";
+    >> "  ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥  ";
+    >> "   ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥   ";
+    >> "    ♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥    ";
+    >> "      ♥♥♥♥♥♥♥♥♥♥♥♥♥      ";
+    >> "        ♥♥♥♥♥♥♥♥♥        ";
+    >> "          ♥♥♥♥♥          ";
+    >> "            ♥            ";
+} finis;
+
+# 2.5. Acción: Dibujar Reloj de Arena
+actio dibujarRelojDeArena(esto tamano : numerus) {
+    # Mitad Superior (Triángulo Invertido)
+    per (esto i : numerus = tamano; i >= 1; i--) {
+        esto espacios : numerus = tamano - i;
+        esto chars : numerus = (2 * i) - 1;
+        esto fila : textum = "";
+        per (esto e : numerus = 0; e < espacios; e++) {
+            fila = fila + " ";
+        } finis;
+        per (esto c : numerus = 0; c < chars; c++) {
+            fila = fila + "█";
+        } finis;
+        >> fila;
+    } finis;
+
+    # Mitad Inferior (Triángulo Hacia Arriba)
+    per (esto j : numerus = 2; j <= tamano; j++) {
+        esto espacios : numerus = tamano - j;
+        esto chars : numerus = (2 * j) - 1;
+        esto fila : textum = "";
+        per (esto e : numerus = 0; e < espacios; e++) {
+            fila = fila + " ";
+        } finis;
+        per (esto c : numerus = 0; c < chars; c++) {
+            fila = fila + "█";
+        } finis;
+        >> fila;
+    } finis;
+} finis;
+
+# 2.6. Acción: Dibujar Árbol de Navidad con Estrella y Tronco
+actio dibujarArbolNavidad(esto copas : numerus) {
+    >> "         ★";
+    
+    per (esto c : numerus = 1; c <= copas; c++) {
+        esto esp : numerus = 10 - c;
+        esto hojas : numerus = (2 * c) - 1;
+        esto fila : textum = "";
+        per (esto e : numerus = 0; e < esp; e++) {
+            fila = fila + " ";
+        } finis;
+        per (esto h : numerus = 0; h < hojas; h++) {
+            fila = fila + "▲";
+        } finis;
+        >> fila;
+    } finis;
+
+    # Tronco del Árbol
+    >> "       [ ||| ]";
+    >> "       [ ||| ]";
+} finis;
+
+# 2.7. Acción: Dibujar Tablero de Ajedrez 8x8
+actio dibujarTableroAjedrez() {
+    >> "    A  B  C  D  E  F  G  H";
+    per (esto filaIdx : numerus = 1; filaIdx <= 8; filaIdx++) {
+        esto filaStr : textum = "" + filaIdx + " ";
+        per (esto colIdx : numerus = 1; colIdx <= 8; colIdx++) {
+            si ((filaIdx + colIdx) % 2 == 0) {
+                filaStr = filaStr + "[#]";
+            } aliter {
+                filaStr = filaStr + "[ ]";
+            } finis;
+        } finis;
+        >> filaStr >> " " >> filaIdx;
+    } finis;
+    >> "    A  B  C  D  E  F  G  H";
+} finis;
+
+
+# =========================================================================
+# 3. SECCIÓN PRINCIPAL DE EJECUCIÓN (MAIOR>)
+# =========================================================================
+MAIOR>
+
+>> "**************************************************";
+>> "*  CODEX LATINUS - GALERÍA DE ARTE ASCII Y FIGURAS  *";
+>> "*  Autor: " >> autor >> " (v" >> version >> ")                  *";
+>> "**************************************************";
+
+imprimirTituloFigura("1. PIRÁMIDE EGIPCIA");
+dibujarPiramide(7);
+
+imprimirTituloFigura("2. DIAMANTE IMPERIAL");
+dibujarDiamante(6);
+
+imprimirTituloFigura("3. CORAZÓN ROMANO");
+dibujarCorazon();
+
+imprimirTituloFigura("4. RELOJ DE ARENA");
+dibujarRelojDeArena(5);
+
+imprimirTituloFigura("5. ÁRBOL FESTIVO");
+dibujarArbolNavidad(6);
+
+imprimirTituloFigura("6. TABLERO DE AJEDREZ 8x8");
+dibujarTableroAjedrez();
+
+imprimirTituloFigura("=== FIN DE LA GALERÍA DE FIGURAS ===");
+
+FINIS;

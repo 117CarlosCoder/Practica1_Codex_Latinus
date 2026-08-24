@@ -1,0 +1,120 @@
+##
+====================================================================
+  CODEX LATINUS - PRUEBA 02: TIPOS, CASTEOS Y ERRORES SEMANTICOS
+  Prueba de estrés semántico, promociones de tipo y detección de errores
+====================================================================
+##
+
+VARIABILES>
+## 1. Declaraciones de todos los tipos primitivos ##
+esto entero_val : numerus = 42;
+esto decimal_val : decimalis = 3.14159;
+esto texto_val : textum = "Mensaje de Prueba";
+esto caracter_val : littera = 'A';
+esto booleano_v : verum;
+esto booleano_f : falsus;
+esto booleano_tipado1 : bool = verum;
+esto booleano_tipado2 : boolean = falsus;
+
+series numeros_base[5] : {10, 20, 30, 40, 50};
+series flags_base[3] : bool {verum, falsus, verum};
+
+structura CuentaBancaria {
+    esto titular : textum,
+    esto saldo : decimalis,
+    esto bloqueada : bool
+} finis;
+
+esto mi_cuenta : CuentaBancaria {
+    titular: "Marco Aurelio",
+    saldo: 15420.75,
+    bloqueada: falsus
+};
+
+MUNERA>
+
+ratio decimalis calcularInteres(esto capital : decimalis, esto tasa : decimalis, esto anos : numerus) {
+    VARIABILES[
+        esto resultado : decimalis = capital;
+    ]
+    per (esto i : numerus = 0; i < anos; i++) {
+        resultado = resultado + (resultado * tasa);
+    } finis;
+    reddere resultado;
+} finis;
+
+actio mostrarResumenTipos() {
+    >> "Entero: " >> entero_val;
+    >> "Decimal: " >> decimal_val;
+    >> "Texto: " >> texto_val;
+    >> "Caracter: " >> caracter_val;
+    >> "Booleano V: " >> booleano_v >> " | Booleano F: " >> booleano_f;
+    >> "Booleano Bool: " >> booleano_tipado1 >> " | Booleano Boolean: " >> booleano_tipado2;
+} finis;
+
+MAIOR>
+>> "========================================================";
+>> ">>> 1. OPERACIONES VALIDAS Y PROMOCION DE TIPOS";
+>> "========================================================";
+
+mostrarResumenTipos();
+
+## Promoción numerus + decimalis -> decimalis ##
+esto suma_mixta : decimalis = entero_val + decimal_val;
+>> "Entero (42) + Decimal (3.14159) = " >> suma_mixta;
+
+## Concatenación de textum con numerus, decimalis y booleanos ##
+esto concat1 : textum = "Saldo de " + mi_cuenta.titular + ": $" + mi_cuenta.saldo;
+esto concat2 : textum = "Estado cuenta bloqueada: " + mi_cuenta.bloqueada;
+>> concat1;
+>> concat2;
+
+## Modificación de elementos del arreglo ##
+numeros_base[0] = numeros_base[0] * 2;
+numeros_base[4] = numeros_base[4] + 5;
+>> "Arreglo pos 0 modificado: " >> numeros_base[0];
+>> "Arreglo pos 4 modificado: " >> numeros_base[4];
+
+>> "Calculo de Interes Compuesto (1000 a 5% por 3 anos): " >> calcularInteres(1000.0, 0.05, 3);
+
+>> "";
+>> "========================================================";
+>> ">>> 2. CASOS DE PRUEBA DISEÑADOS PARA PROVOCAR ERRORES SEMANTICOS";
+>> " (El compilador debe capturar estos errores y listarlos en la tabla)";
+>> "========================================================";
+
+## ERROR SEMANTICO 1: Operación aritmética inválida en textum (resta o multiplicación) ##
+esto error_resta_texto : numerus = "Hola" - 5;
+esto error_mult_texto : numerus = "Mundo" * 3;
+
+## ERROR SEMANTICO 2: Operación aritmética inválida con booleanos ##
+esto error_mult_bool : decimalis = verum * 10.5;
+esto error_div_bool : numerus = falsus / 2;
+
+## ERROR SEMANTICO 3: División entre Cero ##
+esto error_div_cero : numerus = 100 / 0;
+esto error_mod_cero : numerus = 50 % 0;
+
+## ERROR SEMANTICO 4: Corrupción de Flujo (Condición no booleana) ##
+si (100 + 50) {
+    >> "Este bloque NO debe ejecutarse por corrupcion de flujo";
+} finis;
+
+dum ("cadena_no_booleana") {
+    >> "Bucle invalido por corrupcion de flujo";
+} finis;
+
+## ERROR SEMANTICO 5: Asignación a variable inexistente ##
+variable_inexistente = 9999;
+
+## ERROR SEMANTICO 6: Acceso fuera de rango en arreglo ##
+esto fuera_de_rango : numerus = numeros_base[99];
+numeros_base[50] = 1234;
+
+## ERROR SEMANTICO 7: Acceso a atributo inexistente en estructura ##
+mi_cuenta.atributo_falso = 100;
+
+>> "";
+>> "=== PRUEBA DE TIPOS Y ERRORES SEMANTICOS FINALIZADA ===";
+
+FINIS;

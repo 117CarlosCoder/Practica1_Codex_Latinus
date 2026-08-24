@@ -1,0 +1,115 @@
+##
+=============================================================================
+  CODEX LATINUS - EJEMPLO 10: CARACTERES RAROS, EMOJIS, ESCAPES Y ESTRÉS LÉXICO
+  Prueba exhaustiva de robustez: UTF-8, Emojis, Caracteres de Escape (\n, \t),
+  Símbolos Matemáticos, Inyecciones de Texto, HTML, SQL y Comentarios Extremos.
+=============================================================================
+##
+
+# =========================================================================
+# 1. SECCIÓN DE VARIABLES GLOBALES (VARIABILES>)
+# =========================================================================
+VARIABILES>
+
+# Cadenas con Emojis y Caracteres Especiales
+esto mensajeEmoji : textum = "🔥 Codex Latinus v2.0 🚀 - ¡El imperio renace! 👑🏛️⚔️🛡️";
+esto simbolosMatematicos : textum = "Fórmulas: ∑(x_i) = ∫ f(x)dx ≈ √π · ∞ ≠ 0 ± 3.1416 ≤ 100 ≥ 0";
+esto divisasMundiales : textum = "Precios: $100.50 USD | €85.20 EUR | ¥12000 JPY | £75.00 GBP | ₲500000 PYG";
+esto textoConAcentos : textum = "Árbol, camión, pingüino, cigüeña, lingüística, ñandú, corazón, año 2026";
+
+# Cadenas con Escapes Especiales (\n, \t, \", \\)
+esto textoConEscapes : textum = "Columna1\tColumna2\tColumna3\nFila1_A\tFila1_B\tFila1_C";
+esto textoConComillas : textum = "Cicerón dijo: \"Alea iacta est\" y luego marchó.";
+
+# Texto incrustado que parece código (HTML, JSON, SQL, Expresiones Regulares)
+esto htmlIncrustado : textum = "<div id=\"app\" class=\"container\"><h1>Bienvenido</h1><script>alert('xss')</script></div>";
+esto jsonIncrustado : textum = "{\"usuario\": \"JulioCesar\", \"id\": 44, \"activo\": true, \"roles\": [\"Imperator\", \"Consul\"]}";
+esto sqlIncrustado : textum = "SELECT * FROM senatus_romanus WHERE nombre = 'Brutus' OR 1=1; DROP TABLE traidores;";
+esto regexIncrustado : textum = "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$";
+
+# Arreglo con Textos Extremos y Puntuación
+series catalogoRaro[4] : textum = {
+    "¡¡¡ALERTA MÁXIMA!!! [100%]",
+    "---===<<<|||>>>===---",
+    "¿Preguntas? ¿¿¿Dudas??? ¡¡¡Respuestas!!!",
+    "Puntuación: ~!@#$%^&*()_+{}|:\"<>?`-=[]\\;',./"
+};
+
+
+# =========================================================================
+# 2. SECCIÓN DE FUNCIONES (MUNERA>)
+# =========================================================================
+MUNERA>
+
+# 2.1. Función que concatena emojis con números y textos
+ratio textum generarEtiqueta(esto icono : textum, esto texto : textum, esto codigo : numerus) {
+    reddere "[" + icono + " " + texto + " #" + codigo + "]";
+} finis;
+
+# 2.2. Procedimiento con comentarios extremos y caracteres exóticos
+actio procesarTextoExtremo() {
+    # 🛸 Comentario con Emojis extraterrestres: 👽👾🪐🌌
+    # URL con parámetros raros: https://latinus.org/api?v=2&mode=utf8&filter=%20test#section-1
+    ##
+      Comentario multilínea con caracteres extraños:
+      § © ® ™ • ‰ ¶ ‡ † ♠ ♣ ♥ ♦ ♫ ♪ ☼ ♀ ♂
+    ##
+    >> ">>> Procesamiento de caracteres exóticos finalizado con éxito <<<";
+} finis;
+
+
+# =========================================================================
+# 3. SECCIÓN PRINCIPAL DE EJECUCIÓN (MAIOR>)
+# =========================================================================
+MAIOR>
+
+>> "==================================================";
+>> ">>> 1. PRUEBA DE EMOJIS Y SÍMBOLOS UTF-8";
+>> "==================================================";
+>> mensajeEmoji;
+>> simbolosMatematicos;
+>> divisasMundiales;
+>> textoConAcentos;
+
+>> "";
+>> "==================================================";
+>> ">>> 2. PRUEBA DE CARACTERES DE ESCAPE (\\n, \\t, \\\")";
+>> "==================================================";
+>> textoConEscapes;
+>> textoConComillas;
+
+>> "";
+>> "==================================================";
+>> ">>> 3. TEXTO INCRUSTADO (HTML, JSON, SQL, REGEX)";
+>> "==================================================";
+>> "HTML: " >> htmlIncrustado;
+>> "JSON: " >> jsonIncrustado;
+>> "SQL: "  >> sqlIncrustado;
+>> "REGEX: " >> regexIncrustado;
+
+>> "";
+>> "==================================================";
+>> ">>> 4. ARREGLO CON PUNTUACIÓN EXTREMA";
+>> "==================================================";
+per (esto i : numerus = 0; i < 4; i++) {
+    >> "  Item [" >> i >> "]: " >> catalogoRaro[i];
+} finis;
+
+>> "";
+>> "==================================================";
+>> ">>> 5. CONCATENACIÓN CON FUNCIONES Y EMOJIS";
+>> "==================================================";
+esto etiqueta1 : textum = generarEtiqueta("⚡", "Velocidad Extrema", 101);
+esto etiqueta2 : textum = generarEtiqueta("🛡️", "Escudo Máximo", 505);
+esto etiqueta3 : textum = generarEtiqueta("🌟", "Estrella Imperial", 999);
+
+>> etiqueta1;
+>> etiqueta2;
+>> etiqueta3;
+
+procesarTextoExtremo();
+
+>> "";
+>> "=== PRUEBA DE EMOJIS Y CARACTERES RAROS COMPLETADA EXITOSAMENTE ===";
+
+FINIS;

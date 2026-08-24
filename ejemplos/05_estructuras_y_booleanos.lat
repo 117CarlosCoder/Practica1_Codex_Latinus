@@ -1,0 +1,62 @@
+##
+=====================================================
+Codex Latinus - Estructuras, Arreglos y Booleanos
+(Aclaraciones de Telegram y Enunciado Oficial)
+=====================================================
+##
+
+VARIABILES>
+## 1. Declaraciones booleanas especiales y tipadas ##
+esto mi_booleano : verum;
+esto otro_booleano : falsus;
+esto activo : bool verum;
+esto bandera : bool = falsus;
+
+## 2. Arreglos booleanos implícitos y explícitos ##
+series valores[2] : {verum, falsus};
+series flags[2] : bool {verum, verum};
+
+## 3. Estructuras anidadas con arreglos sin dimensión inicial ##
+structura Animal {
+    esto nombre : textum,
+    esto apodo : textum
+} finis;
+
+structura Selva {
+    esto valido : verum,
+    series animales : Animal
+} finis;
+
+## 4. Instanciación especificando dimensión de arreglo en la estructura ##
+esto mi_selva : Selva {
+    valido: verum,
+    animales: Animal[3]
+};
+
+MUNERA>
+ratio bool esValido(esto activo : bool) {
+    reddere activo;
+} finis;
+
+MAIOR>
+>> "=== PRUEBA DE TIPOS Y ESTRUCTURAS ===";
+
+## Asignación a elementos anidados de arreglos dentro de estructuras ##
+mi_selva.animales[0] = {
+    nombre: "Lobo",
+    apodo: "Lupus"
+};
+
+mi_selva.animales[1] = {
+    nombre: "Perro",
+    apodo: "Canis"
+};
+
+>> "Selva valida: " >> mi_selva.valido;
+>> "Animal 0: " >> mi_selva.animales[0].nombre >> " (" >> mi_selva.animales[0].apodo >> ")";
+>> "Animal 1: " >> mi_selva.animales[1].nombre >> " (" >> mi_selva.animales[1].apodo >> ")";
+
+>> "Valores booleanos en arreglo: " >> valores[0] >> " | " >> valores[1];
+>> "Llamada funcion con bool: " >> esValido(activo);
+
+FINIS;

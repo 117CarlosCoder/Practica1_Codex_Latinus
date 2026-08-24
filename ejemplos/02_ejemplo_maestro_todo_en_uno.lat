@@ -1,0 +1,256 @@
+##
+=============================================================================
+  CODEX LATINUS - PROGRAMA MAESTRO TODO EN UNO (EXHAUSTIVO)
+  Demostración integral de cada funcionalidad, tipo de dato y estructura
+=============================================================================
+##
+
+# =========================================================================
+# 1. SECCIÓN DE VARIABLES GLOBALES Y ESTRUCTURAS (VARIABILES>)
+# =========================================================================
+VARIABILES>
+
+# Tipos Primitivos y Literales
+esto enteroGlobal : numerus = 100;
+esto decimalGlobal : decimalis = 3.14159;
+esto textoGlobal : textum = "Imperium Romanum";
+esto letraGlobal : littera = 'C';
+esto boolVerdadero : bool = verum;
+esto boolFalso : boolean = falsus;
+esto flagDirectoVerum : verum;
+esto flagDirectoFalsus : falsus;
+
+# Arreglos Unidimensionales (Inicializados y con Tamaño)
+series numerosPrimos[5] : {2, 3, 5, 7, 11};
+series arregloVacio[4] : numerus;
+series banderas[3] : bool {verum, falsus, verum};
+
+# Definición de Estructuras (Structs Simples y Anidados con Arreglos)
+structura Item {
+    esto nombre : textum,
+    esto precio : decimalis,
+    esto magico : bool
+} finis;
+
+structura Inventario {
+    esto codigo : textum,
+    esto capacidad : numerus,
+    series items : Item
+} finis;
+
+# Instancia Global de Estructura con Inicializador Literal
+esto miInventario : Inventario = {
+    codigo: "INV-001",
+    capacidad: 3,
+    items: Item[3]
+};
+
+
+# =========================================================================
+# 2. SECCIÓN DE FUNCIONES Y ACCIONES (MUNERA>)
+# =========================================================================
+MUNERA>
+
+# 2.1. Acción (Procedimiento sin retorno 'actio') con parámetros y variables locales
+actio imprimirSeparador(esto titulo : textum) {
+    VARIABILES[
+        esto borde : textum = "==================================================";
+    ]
+    >> "";
+    >> borde;
+    >> ">>> " >> titulo;
+    >> borde;
+} finis;
+
+# 2.2. Función con retorno ('ratio numerus') y Algoritmo Recursivo
+ratio numerus factorial(esto n : numerus) {
+    si (n <= 1) {
+        reddere 1;
+    } aliter {
+        reddere n * factorial(n - 1);
+    } finis;
+} finis;
+
+# 2.3. Función con retorno booleano ('ratio bool') y operadores lógicos
+ratio bool esParYPositivo(esto num : numerus) {
+    reddere (num > 0) && (num % 2 == 0);
+} finis;
+
+# 2.4. Función matemática con decimales ('ratio decimalis')
+ratio decimalis calcularPromedio(esto v1 : decimalis, esto v2 : decimalis, esto v3 : decimalis) {
+    reddere (v1 + v2 + v3) / 3.0;
+} finis;
+
+
+# =========================================================================
+# 3. SECCIÓN PRINCIPAL DE EJECUCIÓN (MAIOR>)
+# =========================================================================
+MAIOR>
+
+# -------------------------------------------------------------------------
+# CASO 1: Tipos de Datos Primitivos, Literales y Concatenación
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 1: TIPOS PRIMITIVOS Y CONCATENACION");
+
+>> "Entero: " >> enteroGlobal;
+>> "Decimal: " >> decimalGlobal;
+>> "Texto: " >> textoGlobal;
+>> "Letra: " >> letraGlobal;
+>> "Booleano verum: " >> boolVerdadero;
+>> "Booleano falsus: " >> boolFalso;
+>> "Flag Directo 1: " >> flagDirectoVerum;
+>> "Flag Directo 2: " >> flagDirectoFalsus;
+
+esto concatenado : textum = "Mensaje: " + textoGlobal + " | Anno: " + enteroGlobal;
+>> "Concatenacion con '+': " >> concatenado;
+
+
+# -------------------------------------------------------------------------
+# CASO 2: Expresiones Aritméticas, Relacionales, Lógicas y Unarias
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 2: OPERADORES Y PRECEDENCIA");
+
+esto suma : numerus = 10 + 5 * 2;              # Esperado: 20 por precedencia
+esto division : decimalis = 25.0 / 2.0;         # Esperado: 12.5
+esto modulo : numerus = 17 % 5;                 # Esperado: 2
+esto negativo : numerus = -suma;                # Esperado: -20
+esto negacionLogica : bool = non boolFalso;      # Esperado: verum
+
+>> "10 + 5 * 2 = " >> suma;
+>> "25.0 / 2.0 = " >> division;
+>> "17 % 5 = " >> modulo;
+>> "Unario negativo: " >> negativo;
+>> "Unario 'non falsus': " >> negacionLogica;
+
+esto testComparacion : bool = (suma == 20) && (division > 10.0) && (modulo <= 3);
+>> "Comparacion compleja ((suma == 20) && ...): " >> testComparacion;
+
+
+# -------------------------------------------------------------------------
+# CASO 3: Condicionales (si, aliter si, aliter)
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 3: ESTRUCTURAS CONDICIONALES");
+
+esto calificacion : numerus = 85;
+esto resultadoLetra : textum = "";
+
+si (calificacion >= 90) {
+    resultadoLetra = "Excelente (A)";
+} aliter si (calificacion >= 80) {
+    resultadoLetra = "Muy Bueno (B)";
+} aliter si (calificacion >= 70) {
+    resultadoLetra = "Bueno (C)";
+} aliter {
+    resultadoLetra = "Necesita Mejorar";
+} finis;
+
+>> "Calificacion numerica: " >> calificacion;
+>> "Resultado clasificado: " >> resultadoLetra;
+
+
+# -------------------------------------------------------------------------
+# CASO 4: Bucles e Iteraciones (dum, facere...dum, per, interrumpe, perge)
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 4: BUCLES");
+
+# 4.1 Bucle FOR (per) con incremento ++
+>> "--- Bucle FOR (per): Conteo del 1 al 4 ---";
+per (esto i : numerus = 1; i <= 4; i++) {
+    >> "  Iteracion i = " >> i;
+} finis;
+
+# 4.2 Bucle WHILE (dum) con salto 'perge' (continue) e 'interrumpe' (break)
+>> "--- Bucle WHILE (dum) con interrumpe y perge ---";
+esto contador : numerus = 0;
+dum (contador < 10) {
+    contador++;
+    si (contador == 2) {
+        >> "  (Saltando contador = 2 con perge)";
+        perge;
+    } finis;
+
+    si (contador == 5) {
+        >> "  (Deteniendo bucle en contador = 5 con interrumpe)";
+        interrumpe;
+    } finis;
+
+    >> "  Contador actual: " >> contador;
+} finis;
+
+# 4.3 Bucle DO-WHILE (facere...dum)
+>> "--- Bucle DO-WHILE (facere...dum) ---";
+esto valorHacer : numerus = 1;
+facere {
+    >> "  Ejecutado al menos una vez: valor = " >> valorHacer;
+    valorHacer++;
+} dum (valorHacer <= 2);
+
+
+# -------------------------------------------------------------------------
+# CASO 5: Arreglos (Series) y Mutación de Elementos
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 5: ARREGLOS");
+
+>> "Elementos de primos preinicializados:";
+per (esto k : numerus = 0; k < 5; k++) {
+    >> "  primos[" >> k >> "] = " >> numerosPrimos[k];
+} finis;
+
+>> "Llenando arreglo vacio:";
+per (esto idx : numerus = 0; idx < 4; idx++) {
+    arregloVacio[idx] = (idx + 1) * 10;
+    >> "  arregloVacio[" >> idx >> "] asignado a " >> arregloVacio[idx];
+} finis;
+
+
+# -------------------------------------------------------------------------
+# CASO 6: Estructuras (Structs) Simples, Anidadas y Arreglos en Structs
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 6: STRUCTS");
+
+# Asignación de elementos dentro del arreglo de structs
+miInventario.items[0] = {
+    nombre: "Gladius de Plata",
+    precio: 150.75,
+    magico: verum
+};
+
+miInventario.items[1] = {
+    nombre: "Escudo Legionario",
+    precio: 85.50,
+    magico: falsus
+};
+
+miInventario.items[2] = {
+    nombre: "Pocion de Curacion",
+    precio: 25.00,
+    magico: verum
+};
+
+>> "Inventario Codigo: " >> miInventario.codigo >> " | Capacidad: " >> miInventario.capacidad;
+per (esto m : numerus = 0; m < 3; m++) {
+    >> "  Item [" >> m >> "]: " >> miInventario.items[m].nombre 
+       >> " | Precio: " >> miInventario.items[m].precio 
+       >> " | Magico: " >> miInventario.items[m].magico;
+} finis;
+
+
+# -------------------------------------------------------------------------
+# CASO 7: Llamadas a Funciones, Recursividad y Procedimientos
+# -------------------------------------------------------------------------
+imprimirSeparador("CASO 7: FUNCIONES Y RECURSIVIDAD");
+
+esto fac6 : numerus = factorial(6);
+>> "Factorial de 6 (esperado 720): " >> fac6;
+
+esto testPar1 : bool = esParYPositivo(12);
+esto testPar2 : bool = esParYPositivo(-4);
+>> "esParYPositivo(12) (esperado verum): " >> testPar1;
+>> "esParYPositivo(-4) (esperado falsus): " >> testPar2;
+
+esto promedioFinal : decimalis = calcularPromedio(15.5, 18.0, 20.5);
+>> "Promedio de notas (15.5, 18.0, 20.5): " >> promedioFinal;
+
+imprimirSeparador("PROGRAMA MAESTRO EJECUTADO CON EXITO");
+
+FINIS;
