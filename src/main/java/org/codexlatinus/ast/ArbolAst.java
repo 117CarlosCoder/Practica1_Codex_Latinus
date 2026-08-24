@@ -4,10 +4,12 @@ import org.codexlatinus.ast.sentencias.Sentencia;
 import org.codexlatinus.ast.sentencias.funciones.DeclaracionFuncion;
 import org.codexlatinus.model.ContextoEjecucion;
 import org.codexlatinus.model.Entorno;
+import org.codexlatinus.model.PasoPila;
 import org.codexlatinus.parser.ResultadoCompilacion;
 import org.codexlatinus.utils.PigLatinTranslater;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -49,10 +51,14 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
     }
 
     public ResultadoCompilacion ejecutar(Supplier<String> lector, Consumer<String> escritor, BooleanSupplier cancelChecker, String astString) {
-        return ejecutar(lector, escritor, cancelChecker, astString, "", null);
+        return ejecutar(lector, escritor, cancelChecker, astString, "", null, Collections.emptyList());
     }
 
     public ResultadoCompilacion ejecutar(Supplier<String> lector, Consumer<String> escritor, BooleanSupplier cancelChecker, String astString, String codigoDot, java.awt.image.BufferedImage imagenGraphviz) {
+        return ejecutar(lector, escritor, cancelChecker, astString, codigoDot, imagenGraphviz, Collections.emptyList());
+    }
+
+    public ResultadoCompilacion ejecutar(Supplier<String> lector, Consumer<String> escritor, BooleanSupplier cancelChecker, String astString, String codigoDot, java.awt.image.BufferedImage imagenGraphviz, List<PasoPila> pasosPila) {
         ContextoEjecucion ctx = new ContextoEjecucion(lector, escritor, cancelChecker);
         Entorno entornoGlobal = new Entorno(null, "Global");
 
@@ -92,7 +98,8 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
                 sbPigLatin.toString(),
                 ctx.getTablaTipos(),
                 codigoDot,
-                imagenGraphviz
+                imagenGraphviz,
+                pasosPila
         );
     }
 

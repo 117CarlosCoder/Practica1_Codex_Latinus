@@ -2,11 +2,13 @@ package org.codexlatinus.parser;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.codexlatinus.CodexLatinusLexer;
 import org.codexlatinus.CodexLatinusParser;
 import org.codexlatinus.ast.ArbolAst;
 import org.codexlatinus.ast.VisitanteCodexLatinusAst;
 import org.codexlatinus.model.ErrorCompilador;
+import org.codexlatinus.model.PasoPila;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +55,11 @@ public class GestorCompilacion {
         String astString = tree.toStringTree(parser);
         String codigoDot = org.codexlatinus.visitor.VisitanteGraphviz.generarDot(tree, parser);
 
+        CapturadorPilaListener capturadorPila = new CapturadorPilaListener(parser);
+        ParseTreeWalker.DEFAULT.walk(capturadorPila, tree);
+        capturadorPila.finalizarAnalisis();
+        List<PasoPila> pasosPila = capturadorPila.getPasos();
+
         if (!erroresTotales.isEmpty()) {
             return new ResultadoCompilacion(
                     false,
@@ -63,14 +70,15 @@ public class GestorCompilacion {
                     "",
                     new org.codexlatinus.model.TablaTipos(),
                     codigoDot,
-                    null
+                    null,
+                    pasosPila
             );
         }
 
         VisitanteCodexLatinusAst builder = new VisitanteCodexLatinusAst();
         ArbolAst ast = builder.visitProgram(tree);
         try {
-            return ast.ejecutar(lectorConsola, escritorConsola, verificadorCancelacion, astString, codigoDot, null);
+            return ast.ejecutar(lectorConsola, escritorConsola, verificadorCancelacion, astString, codigoDot, null, pasosPila);
         } catch (Exception e) {
             erroresTotales.add(new ErrorCompilador(ErrorCompilador.TipoError.SEMANTICO, "Excepción en tiempo de ejecución: " + e.getMessage(), 1, 1));
             return new ResultadoCompilacion(
@@ -82,7 +90,8 @@ public class GestorCompilacion {
                     "",
                     new org.codexlatinus.model.TablaTipos(),
                     codigoDot,
-                    null
+                    null,
+                    pasosPila
             );
         }
     }

@@ -19,6 +19,7 @@ public class VentanaPrincipal extends JFrame {
     private JTextArea areaConsola;
     private JTextArea areaAst;
     private PanelImagenZoom panelImagenZoom;
+    private PanelPilaProcesos panelPilaProcesos;
     private JTextArea areaErrores;
     private JTextArea areaPigLatin;
     private JLabel lblEstado;
@@ -123,6 +124,7 @@ public class VentanaPrincipal extends JFrame {
             areaAst.setText("");
             areaErrores.setText("");
             areaPigLatin.setText("");
+            if (panelPilaProcesos != null) panelPilaProcesos.cargarPasos(java.util.Collections.emptyList());
             archivoActual = null;
             lblEstado.setText("Editor limpio.");
         });
@@ -239,19 +241,18 @@ public class VentanaPrincipal extends JFrame {
         areaConsola.setFont(new Font("Consolas", Font.BOLD, 14));
         areaConsola.setMargin(new Insets(8, 10, 8, 10));
         JScrollPane scrollConsola = new JScrollPane(areaConsola);
-        pestanasDerecha.addTab("🖥 Consola de Salida", scrollConsola);
+        pestanasDerecha.addTab("Consola de Salida", scrollConsola);
 
-        // Pestaña 2: Árbol Visual AST (Graphviz con Zoom interactivo)
         JPanel panelAstContenedor = new JPanel(new BorderLayout(5, 5));
 
         JToolBar barraAst = new JToolBar();
         barraAst.setFloatable(false);
-        JButton btnZoomIn = new JButton("🔍 +");
-        JButton btnZoomOut = new JButton("🔍 -");
-        JButton btnZoomReset = new JButton("🔄 100%");
+        JButton btnZoomIn = new JButton("Zoom +");
+        JButton btnZoomOut = new JButton("Zoom -");
+        JButton btnZoomReset = new JButton("100%");
         JLabel lblZoomEstado = new JLabel(" Zoom: 100% ");
-        JButton btnGuardarPng = new JButton("💾 Guardar PNG");
-        JButton btnGuardarDot = new JButton("📄 Guardar DOT");
+        JButton btnGuardarPng = new JButton("Guardar PNG");
+        JButton btnGuardarDot = new JButton("Guardar DOT");
 
         panelImagenZoom = new PanelImagenZoom();
         panelImagenZoom.setEtiquetaEstado(lblZoomEstado);
@@ -276,13 +277,13 @@ public class VentanaPrincipal extends JFrame {
         areaAst.setMargin(new Insets(6, 8, 6, 8));
 
         JTabbedPane subPestanasAst = new JTabbedPane();
-        subPestanasAst.addTab("🌳 Gráfico Visual (Graphviz)", panelImagenZoom);
-        subPestanasAst.addTab("📝 Código DOT / Texto", new JScrollPane(areaAst));
+        subPestanasAst.addTab("Gráfico Visual (Graphviz)", panelImagenZoom);
+        subPestanasAst.addTab("Código DOT / Texto", new JScrollPane(areaAst));
 
         panelAstContenedor.add(barraAst, BorderLayout.NORTH);
         panelAstContenedor.add(subPestanasAst, BorderLayout.CENTER);
 
-        pestanasDerecha.addTab("🌳 Árbol Sintáctico (AST)", panelAstContenedor);
+        pestanasDerecha.addTab("Árbol Sintáctico (AST)", panelAstContenedor);
 
         areaErrores = new JTextArea();
         areaErrores.setEditable(false);
@@ -300,6 +301,9 @@ public class VentanaPrincipal extends JFrame {
         areaPigLatin.setMargin(new Insets(8, 10, 8, 10));
         JScrollPane scrollPigLatin = new JScrollPane(areaPigLatin);
         pestanasDerecha.addTab("Traducción (Pig Latin)", scrollPigLatin);
+
+        panelPilaProcesos = new PanelPilaProcesos();
+        pestanasDerecha.addTab("Pila de Procesos", panelPilaProcesos);
 
         panel.add(pestanasDerecha, BorderLayout.CENTER);
         return panel;
@@ -484,6 +488,9 @@ public class VentanaPrincipal extends JFrame {
                 ? resultado.getCodigoDot() : resultado.getRepresentacionAst());
         areaErrores.setText(resultado.getErroresFormateados());
         areaPigLatin.setText(resultado.getCodigoPigLatin());
+        if (panelPilaProcesos != null) {
+            panelPilaProcesos.cargarPasos(resultado.getPasosPila());
+        }
         // Actualizar tabla de símbolos semántica en el renderizador de sintaxis de alto rendimiento
         VistaSintaxisLatinus.actualizarTablaSimbolos(resultado.getListaSimbolos(), areaEditor.getText());
         areaEditor.repaint();
