@@ -1,0 +1,37 @@
+# build
+/target/
+
+# logs
+/logs/
+
+# tests
+*.log
+
+# dependencies
+/node_modules/
+/dist/
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Scratch
+/scratch/
+
+#Enunciado
+/enunciado/
+
+#web
+/web_visualizador/
+
+#Test
+/src/test/
