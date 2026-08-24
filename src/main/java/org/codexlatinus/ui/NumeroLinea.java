@@ -67,7 +67,8 @@ public class NumeroLinea extends JPanel implements CaretListener, DocumentListen
         int anchoTexto = fontMetrics.charWidth('9') * digitos;
         Insets insets = getInsets();
         int anchoPreferido = insets.left + insets.right + anchoTexto;
-        int altoPreferido = Math.max(componenteTexto.getHeight(), componenteTexto.getPreferredSize().height);
+        int altoLinea = fontMetrics.getHeight();
+        int altoPreferido = Math.max(componenteTexto.getHeight(), totalLineas * altoLinea);
 
         Dimension tamanoActual = getPreferredSize();
         if (tamanoActual.width != anchoPreferido || tamanoActual.height != altoPreferido) {
