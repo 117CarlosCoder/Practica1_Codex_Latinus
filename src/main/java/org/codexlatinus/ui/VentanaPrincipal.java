@@ -15,9 +15,10 @@ import java.util.Objects;
 
 public class VentanaPrincipal extends JFrame {
 
-    private JTextArea areaEditor;
+    private JEditorPane areaEditor;
     private JTextArea areaConsola;
     private JTextArea areaAst;
+    private PanelImagenZoom panelImagenZoom;
     private JTextArea areaErrores;
     private JTextArea areaPigLatin;
     private JLabel lblEstado;
@@ -209,9 +210,12 @@ public class VentanaPrincipal extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createTitledBorder("Editor de Código Fuente (.lat)"));
 
-        areaEditor = new JTextArea();
+        areaEditor = new JEditorPane();
+        areaEditor.setEditorKit(new EditorKitLatinus());
         areaEditor.setFont(new Font("Consolas", Font.PLAIN, 14));
-        areaEditor.setTabSize(4);
+        areaEditor.setBackground(new Color(24, 24, 24));
+        areaEditor.setForeground(new Color(220, 220, 220));
+        areaEditor.setCaretColor(Color.WHITE);
         areaEditor.setMargin(new Insets(6, 6, 6, 6));
 
         JScrollPane scrollEditor = new JScrollPane(areaEditor);
@@ -237,15 +241,49 @@ public class VentanaPrincipal extends JFrame {
         JScrollPane scrollConsola = new JScrollPane(areaConsola);
         pestanasDerecha.addTab("🖥 Consola de Salida", scrollConsola);
 
-        // Pestaña 2: AST
+        // Pestaña 2: Árbol Visual AST (Graphviz con Zoom interactivo)
+        JPanel panelAstContenedor = new JPanel(new BorderLayout(5, 5));
+
+        JToolBar barraAst = new JToolBar();
+        barraAst.setFloatable(false);
+        JButton btnZoomIn = new JButton("🔍 +");
+        JButton btnZoomOut = new JButton("🔍 -");
+        JButton btnZoomReset = new JButton("🔄 100%");
+        JLabel lblZoomEstado = new JLabel(" Zoom: 100% ");
+        JButton btnGuardarPng = new JButton("💾 Guardar PNG");
+        JButton btnGuardarDot = new JButton("📄 Guardar DOT");
+
+        panelImagenZoom = new PanelImagenZoom();
+        panelImagenZoom.setEtiquetaEstado(lblZoomEstado);
+
+        btnZoomIn.addActionListener(e -> panelImagenZoom.acercar());
+        btnZoomOut.addActionListener(e -> panelImagenZoom.alejar());
+        btnZoomReset.addActionListener(e -> panelImagenZoom.restablecerZoom());
+        btnGuardarPng.addActionListener(e -> guardarImagenAstPng());
+        btnGuardarDot.addActionListener(e -> guardarArchivoDot());
+
+        barraAst.add(btnZoomIn);
+        barraAst.add(btnZoomOut);
+        barraAst.add(btnZoomReset);
+        barraAst.add(lblZoomEstado);
+        barraAst.addSeparator();
+        barraAst.add(btnGuardarPng);
+        barraAst.add(btnGuardarDot);
+
         areaAst = new JTextArea();
         areaAst.setEditable(false);
         areaAst.setFont(new Font("Consolas", Font.PLAIN, 12));
         areaAst.setMargin(new Insets(6, 8, 6, 8));
-        JScrollPane scrollAst = new JScrollPane(areaAst);
-        pestanasDerecha.addTab("Árbol Sintáctico (AST)", scrollAst);
 
-        // Pestaña 3: Errores
+        JTabbedPane subPestanasAst = new JTabbedPane();
+        subPestanasAst.addTab("🌳 Gráfico Visual (Graphviz)", panelImagenZoom);
+        subPestanasAst.addTab("📝 Código DOT / Texto", new JScrollPane(areaAst));
+
+        panelAstContenedor.add(barraAst, BorderLayout.NORTH);
+        panelAstContenedor.add(subPestanasAst, BorderLayout.CENTER);
+
+        pestanasDerecha.addTab("🌳 Árbol Sintáctico (AST)", panelAstContenedor);
+
         areaErrores = new JTextArea();
         areaErrores.setEditable(false);
         areaErrores.setFont(new Font("Consolas", Font.PLAIN, 13));
@@ -253,7 +291,6 @@ public class VentanaPrincipal extends JFrame {
         JScrollPane scrollErrores = new JScrollPane(areaErrores);
         pestanasDerecha.addTab("Consola de Errores", scrollErrores);
 
-        // Pestaña 4: Traducción Pig Latin
         areaPigLatin = new JTextArea();
         areaPigLatin.setEditable(false);
         areaPigLatin.setFont(new Font("Consolas", Font.PLAIN, 13));
@@ -297,6 +334,8 @@ public class VentanaPrincipal extends JFrame {
             try {
                 String contenido = Files.readString(archivo.toPath());
                 areaEditor.setText(contenido);
+                VistaSintaxisLatinus.deshabilitarColoreado();
+                areaEditor.repaint();
                 areaEditor.setCaretPosition(0);
                 archivoActual = archivo;
                 lblEstado.setText("📄 Archivo cargado en editor: " + archivo.getName());
@@ -417,20 +456,44 @@ public class VentanaPrincipal extends JFrame {
 
         this.ultimoResultado = resultado;
 
-        // Asignar el 100% de la salida completa y consistente del resultado
         areaConsola.setText(resultado.getSalidaConsola());
         areaConsola.setCaretPosition(areaConsola.getDocument().getLength());
 
-        areaAst.setText(resultado.getRepresentacionAst());
+        if (panelImagenZoom != null) {
+            panelImagenZoom.setImagen(null);
+            panelImagenZoom.setMensajeEstado("⚙️ Generando y renderizando árbol en segundo plano con Graphviz...");
+            String dotCode = resultado.getCodigoDot();
+            if (dotCode != null && !dotCode.isBlank()) {
+                new Thread(() -> {
+                    java.awt.image.BufferedImage img = resultado.getImagenGraphviz();
+                    SwingUtilities.invokeLater(() -> {
+                        if (panelImagenZoom != null) {
+                            if (img != null) {
+                                panelImagenZoom.setImagen(img);
+                            } else {
+                                panelImagenZoom.setMensajeEstado("⚠️ No se pudo renderizar el árbol visual con Graphviz (dot). Revisa la pestaña de código DOT.");
+                            }
+                        }
+                    });
+                }, "Hilo-Render-Graphviz-Async").start();
+            } else {
+                panelImagenZoom.setMensajeEstado("No hay árbol AST disponible para graficar.");
+            }
+        }
+        areaAst.setText(resultado.getCodigoDot() != null && !resultado.getCodigoDot().isBlank()
+                ? resultado.getCodigoDot() : resultado.getRepresentacionAst());
         areaErrores.setText(resultado.getErroresFormateados());
         areaPigLatin.setText(resultado.getCodigoPigLatin());
+        // Actualizar tabla de símbolos semántica en el renderizador de sintaxis de alto rendimiento
+        VistaSintaxisLatinus.actualizarTablaSimbolos(resultado.getListaSimbolos(), areaEditor.getText());
+        areaEditor.repaint();
 
         if (resultado.esExitoso()) {
-            pestanasDerecha.setSelectedIndex(0); // Consola
+            pestanasDerecha.setSelectedIndex(0); 
             lblEstado.setText(String.format("✅ Ejecución finalizada en %.2f s. Símbolos generados: %d",
                     duracionMs / 1000.0, resultado.getListaSimbolos().size()));
         } else {
-            pestanasDerecha.setSelectedIndex(2); // Errores
+            pestanasDerecha.setSelectedIndex(2);
             lblEstado.setText(String.format("⚠️ Se encontraron %d errores (tiempo: %.2f s).",
                     resultado.getListaErrores().size(), duracionMs / 1000.0));
         }
@@ -445,7 +508,7 @@ public class VentanaPrincipal extends JFrame {
 
         String traduccion = GestorCompilacion.traducirAPigLatin(codigo);
         areaPigLatin.setText(traduccion);
-        pestanasDerecha.setSelectedIndex(3); // Pestaña Traducción (Pig Latin)
+        pestanasDerecha.setSelectedIndex(3);
         lblEstado.setText("Traducción a Pig Latin generada con éxito.");
     }
 
@@ -530,6 +593,8 @@ public class VentanaPrincipal extends JFrame {
             try {
                 String contenido = Files.readString(archivoActual.toPath());
                 areaEditor.setText(contenido);
+                VistaSintaxisLatinus.deshabilitarColoreado();
+                areaEditor.repaint();
                 lblEstado.setText("Archivo cargado: " + archivoActual.getName());
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al abrir archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -593,6 +658,63 @@ public class VentanaPrincipal extends JFrame {
                 refrescarListaEjemplos();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al guardar archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void guardarImagenAstPng() {
+        if (panelImagenZoom == null || panelImagenZoom.getImagen() == null) {
+            JOptionPane.showMessageDialog(this, "No hay ninguna imagen de árbol AST generada para guardar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser(new File(CARPETA_EJEMPLOS));
+        chooser.setDialogTitle("Guardar Diagrama AST como PNG");
+        chooser.setFileFilter(new FileNameExtensionFilter("Imagen PNG (*.png)", "png"));
+        String defaultName = archivoActual != null ? archivoActual.getName().replaceAll("\\.[^.]+$", "") + "_ast.png" : "arbol_ast.png";
+        chooser.setSelectedFile(new File(defaultName));
+
+        int res = chooser.showSaveDialog(this);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            File destino = chooser.getSelectedFile();
+            if (!destino.getName().toLowerCase().endsWith(".png")) {
+                destino = new File(destino.getAbsolutePath() + ".png");
+            }
+            try {
+                javax.imageio.ImageIO.write(panelImagenZoom.getImagen(), "png", destino);
+                lblEstado.setText("Imagen AST guardada: " + destino.getName());
+                JOptionPane.showMessageDialog(this, "Diagrama AST guardado con éxito en:\n" + destino.getAbsolutePath(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al guardar imagen: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void guardarArchivoDot() {
+        String dot = areaAst.getText();
+        if (dot == null || dot.isBlank()) {
+            JOptionPane.showMessageDialog(this, "No hay código DOT generado para guardar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser chooser = new JFileChooser(new File(CARPETA_EJEMPLOS));
+        chooser.setDialogTitle("Guardar Archivo Graphviz DOT");
+        chooser.setFileFilter(new FileNameExtensionFilter("Archivo Graphviz DOT (*.dot)", "dot"));
+        String defaultName = archivoActual != null ? archivoActual.getName().replaceAll("\\.[^.]+$", "") + "_ast.dot" : "arbol_ast.dot";
+        chooser.setSelectedFile(new File(defaultName));
+
+        int res = chooser.showSaveDialog(this);
+        if (res == JFileChooser.APPROVE_OPTION) {
+            File destino = chooser.getSelectedFile();
+            if (!destino.getName().toLowerCase().endsWith(".dot")) {
+                destino = new File(destino.getAbsolutePath() + ".dot");
+            }
+            try (FileWriter writer = new FileWriter(destino)) {
+                writer.write(dot);
+                lblEstado.setText("Archivo DOT guardado: " + destino.getName());
+                JOptionPane.showMessageDialog(this, "Archivo DOT guardado con éxito en:\n" + destino.getAbsolutePath(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al guardar archivo DOT: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
