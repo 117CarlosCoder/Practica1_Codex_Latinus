@@ -84,7 +84,8 @@ public class ArbolAst implements NodoAst, ContenedorSentencias {
                 astString != null ? astString : "()",
                 ctx.getTablaSimbolosCompleta(),
                 ctx.getErroresSemanticos(),
-                sbPigLatin.toString()
+                sbPigLatin.toString(),
+                ctx.getTablaTipos()
         );
     }
 
