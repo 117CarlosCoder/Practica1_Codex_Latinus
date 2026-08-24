@@ -29,6 +29,8 @@ public class PigLatinTranslater {
         if (kw == null || kw.isEmpty()) return kw;
         return switch (kw) {
             case "VARIABILES>" -> "ARIABILESVAY>";
+            case "VARIABILES[" -> "ARIABILESVAY[";
+            case "VARIABILES" -> "ARIABILESVAY";
             case "MUNERA>" -> "UNERAMAY>";
             case "MAIOR>" -> "AIORMAY>";
             case "FINIS", "finis" -> "inisfay";
